@@ -81,6 +81,7 @@ func NewWithLocation(location *time.Location) *Cron {
 	return &Cron{
 		entries:  nil,
 		add:      make(chan *Entry),
+		remove:   make(chan string),
 		stop:     make(chan struct{}),
 		snapshot: make(chan []*Entry),
 		running:  false,
@@ -291,7 +292,7 @@ func (c *Cron) entrySnapshot() []*Entry {
 	entries := []*Entry{}
 	for _, e := range c.entries {
 		entries = append(entries, &Entry{
-			Name:e.Name,
+			Name:     e.Name,
 			Schedule: e.Schedule,
 			Next:     e.Next,
 			Prev:     e.Prev,
