@@ -7,15 +7,16 @@ Callers may register Funcs to be invoked on a given schedule.  Cron will run
 them in their own goroutines.
 
 	c := cron.New()
-	c.AddFunc("0 30 * * * *", func() { fmt.Println("Every hour on the half hour") })
-	c.AddFunc("@hourly",      func() { fmt.Println("Every hour") })
-	c.AddFunc("@every 1h30m", func() { fmt.Println("Every hour thirty") })
+	c.AddFunc("name","0 30 * * * *", func() { fmt.Println("Every hour on the half hour") })
+	c.AddFunc("name1","@hourly",      func() { fmt.Println("Every hour") })
+	c.AddFunc("name2","@every 1h30m", func() { fmt.Println("Every hour thirty") })
 	c.Start()
+	c.Remove("name2")
 	..
 	// Funcs are invoked in their own goroutine, asynchronously.
 	...
 	// Funcs may also be added to a running Cron
-	c.AddFunc("@daily", func() { fmt.Println("Every day") })
+	c.AddFunc("name","@daily", func() { fmt.Println("Every day") })
 	..
 	// Inspect the cron job entries' next and previous run times.
 	inspect(c.Entries())
@@ -84,7 +85,7 @@ You may use one of several pre-defined schedules in place of a cron expression.
 
 Intervals
 
-You may also schedule a job to execute at fixed intervals, starting at the time it's added 
+You may also schedule a job to execute at fixed intervals, starting at the time it's added
 or cron is run. This is supported by formatting the cron spec like this:
 
     @every <duration>

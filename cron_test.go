@@ -377,6 +377,28 @@ func TestJob(t *testing.T) {
 	}
 }
 
+func TestCron_Remove(t *testing.T) {
+
+	cron := New()
+
+	cron.AddFunc("Cron_Remove1", "0 0 0 1 1 ?", func() {})
+	cron.AddFunc("Cron_Remove3", "0 0 0 31 12 ?", func() {})
+	cron.AddFunc("Cron_Remove1", "* * * * * ?", func() {})
+
+	if len(cron.Entries()) != 2 {
+		t.Error("remove job fails")
+	}
+
+	cron.Remove("Cron_Remove1")
+
+	cron.Start()
+	defer cron.Stop()
+
+	if len(cron.Entries()) != 1 {
+		t.Error("remove job fails")
+	}
+}
+
 type ZeroSchedule struct{}
 
 func (*ZeroSchedule) Next(time.Time) time.Time {
